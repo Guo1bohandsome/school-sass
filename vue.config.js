@@ -24,6 +24,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
+
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
@@ -36,6 +37,13 @@ module.exports = {
       warnings: false,
       errors: true
     },
+    proxy: {
+      '/api': {
+        target: 'http://ihrm-java.itheima.net',
+        changeOrigin: true, //是否跨域
+        // PathRewrite: {} 接口地址需要有api
+      }
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
