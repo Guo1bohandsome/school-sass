@@ -40,8 +40,9 @@ export default {
       return this.$router.options.routes
     },
     activeMenu() {
-      const route = this.$route
-      const { meta, path } = route
+      const routea = this.$route
+      console.log(routea)
+      const { meta, path } = routea
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
         return meta.activeMenu

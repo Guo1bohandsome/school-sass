@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '教务管理系统',
+  title: '人员管理后台',
 
   /**
    * @type {boolean} true | false

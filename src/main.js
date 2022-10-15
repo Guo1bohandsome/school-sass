@@ -14,6 +14,10 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import Components from '@/components'
+import * as filters from '@/filters' // 引入工具类，* as filters是所有对象的集合，因为过滤器导出的是一个个函数
+// 注册全局的过滤器
+
 Vue.config.devtools = true;
 /**
  * If you don't want to use mock-server
@@ -32,11 +36,16 @@ Vue.config.devtools = true;
 Vue.use(ElementUI, { locale })
   // 如果想要中文版 element-ui，按如下方式声明
   // Vue.use(ElementUI)
+console.log(Object.keys(filters)) //我们可以打印一i下
+Object.keys(filters).forEach(key => { //key是方法名，value是函数
+  // 注册过滤器
+  Vue.filter(key, filters[key])
+})
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
 })
 Vue.config.productionTip = false
-
+Vue.use(Components)
 new Vue({
   el: '#app',
   router,
