@@ -37,12 +37,29 @@
                   type="primary"
                   @click="saveUser"
                 >更新</el-button>
-                <el-button @click="$router.back()">返回</el-button>
+                <el-button @click="$router.push('/employees')">返回</el-button>
 
               </el-form-item>
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="个人详情">
+            <el-row
+              type="flex"
+              justify="end"
+            >
+              <el-tooltip content="打印个人基本信息">
+                <!-- <el-button
+                  type="text"
+                  size="small"
+                  @click="$router.push(`/employees/print/${userId}?type=personal`)"
+                > <i class="el-icon-printer"></i></el-button> -->
+
+                <router-link :to="`/employees/print/${userId}?type=personal`">
+                  <i class="el-icon-printer"></i>
+                </router-link>
+              </el-tooltip>
+            </el-row>
+
             <el-button
               type="primary"
               @click="UserComponent='el-button'"
@@ -60,6 +77,16 @@
             <!-- 原来的写法组件只能写死，只能显示固定的组件。注意is后面必须跟变量 -->
           </el-tab-pane>
           <el-tab-pane label="岗位信息">
+            <el-row
+              type="flex"
+              justify="end"
+            >
+              <el-tooltip content="打印岗位信息">
+                <router-link :to="`/employees/print/${userId}?type=job`">
+                  <i class="el-icon-printer" />
+                </router-link>
+              </el-tooltip>
+            </el-row>
             <component :is="JonComponent" />
           </el-tab-pane>
         </el-tabs>

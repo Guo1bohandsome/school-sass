@@ -39,6 +39,24 @@
             prop="username"
           />
           <el-table-column
+            label="头像"
+            align="center"
+          >
+            <template v-slot="{row}">
+              <!-- 我们可以通过作用域插槽定义出来 -->
+              <img
+                v-imageerror="require('@/assets/common/head.jpg')"
+                :src="row.staffPhoto"
+                alt=""
+                style="border-radius:50%;
+                width:100px;
+                height: 100px;
+                padding:10px"
+                @click="showQrCode(row.staffPhoto)"
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
             label="工号"
             sortable=""
             prop="workNumber"
@@ -100,6 +118,7 @@
               <el-button
                 type="text"
                 size="small"
+                @click="editRole(row.id)"
               >角色</el-button>
               <el-button
                 type="text"
@@ -107,6 +126,7 @@
                 @click="deleteEmployee(row.id)"
               >删除</el-button>
             </template>
+
           </el-table-column>
         </el-table>
         <!-- 分页组件 -->
@@ -132,6 +152,24 @@
       @addEmployee="getEmployeeList"
       @closeEmployee="closeEmployee"
     ></add-employee>
+    <el-dialog
+      @close="showCodeDialog=false"
+      title="二维码"
+      :visible="showCodeDialog"
+    >
+      <el-row
+        type="flex"
+        justify="center"
+      >
+        <canvas ref="myCanvas" />
+      </el-row>
+    </el-dialog>
+    <AssignRole
+      ref="assignRole"
+      :show-role-dialog="showRoleDialog"
+      :user-id="userId"
+      @closeRole="closerole"
+    ></AssignRole>
   </div>
 </template>
 <script>
@@ -139,8 +177,10 @@ import { getEmployeeList, delEmployee } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 import AddEmployee from './components/addEmployee.vue'
 import { formatDate } from '@/filters'
+import AssignRole from './components/assign-role.vue'
+import QrCode from 'qrcode'
 export default {
-  components: { AddEmployee },
+  components: { AddEmployee, AssignRole },
   data() {
     return {
       list: [], //接受数组
@@ -149,8 +189,12 @@ export default {
         size: 10, //每页条数
         total: 0 //总数
       },
+      // defaultImg: require('@/assets/common/head.jpg'),
       loading: false, //显示遮罩层
-      showDialog: false //默认是关闭图层
+      showDialog: false, //默认是关闭图层
+      showCodeDialog: false, //显示二维码弹层
+      showRoleDialog: false, //是否展示弹窗
+      userId: null
     }
   },
   created() {
@@ -257,6 +301,25 @@ export default {
           return item[headers[key]] //headers[key]得到的是一个英文名
         })
       })
+    },
+    showQrCode(url) {
+      //url存在的情况下 才弹出层
+      if (url) {
+        ;(this.showCodeDialog = true), //数据更新了，但是弹层不会立刻出现！页面的渲染是异步的！！！这里执行完弹层还没创建完毕，更别说ref 的canva DOM了
+          this.$nextTick(() => {
+            //有一个方法可以在上一次数据更新完毕，页面渲染完毕之后
+            QrCode.toCanvas(this.$refs.myCanvas, url) //将地址转化为二维码，注意这里不一定是地址，但一定是字符串，如果后面是http地址的话，则会直接跳到对应网站
+          })
+      } else {
+        this.$message.warning('该用户还未上传头像')
+      }
+    },
+    async editRole(id) {
+      ;(this.showRoleDialog = true), await this.$refs.assignRole.getUserDetailById(id) //用refs即可调用子组件的方法
+      this.userId = id //把id赋值给userId并传给子组件
+    },
+    closerole(boolean) {
+      this.showRoleDialog = boolean
     }
   }
 }

@@ -35,10 +35,14 @@ import variables from '@/styles/variables.scss'
 export default {
   components: { SidebarItem, Logo },
   computed: {
-    ...mapGetters(['sidebar']),
-    routes() {
-      return this.$router.options.routes
-    },
+    ...mapGetters(['sidebar', 'routes']),
+    // routes() {
+    // 这个是返回当前路由的路由表 permission=>即使addRoutes添加路由了
+    // =>这个地方不会响应式变化
+    // 所以左侧菜单怎么取到子模块的属性 ，
+    //不能用就把这整个的计算属性去掉
+    //   return this.$router.options.routes
+    // },
     activeMenu() {
       const routea = this.$route
       console.log(routea)

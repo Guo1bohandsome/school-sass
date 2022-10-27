@@ -9,7 +9,7 @@ const TimeOut = 3600
 const servic = axios.create({
     //当执行npm run dev=>.env.development=>/api=>跨域代理
     baseURL: process.env.VUE_APP_BASE_API,
-    timeout: 5000
+    timeout: 85000
   }) // 创建一个axios的实例
 servic.interceptors.request.use(config => {
     if (store.getters.token) {

@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <imageUpload></imageUpload>
+
   </div>
 </template>
 

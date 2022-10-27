@@ -17,7 +17,7 @@ import '@/permission' // permission control
 import Components from '@/components'
 import * as filters from '@/filters' // 引入工具类，* as filters是所有对象的集合，因为过滤器导出的是一个个函数
 // 注册全局的过滤器
-
+import CheckPermission from '@/mixin/checkPermission'
 Vue.config.devtools = true;
 /**
  * If you don't want to use mock-server
@@ -46,6 +46,7 @@ Object.keys(directives).forEach(key => {
 })
 Vue.config.productionTip = false
 Vue.use(Components)
+Vue.mixin(CheckPermission) //表示所有的组件都拥有了检查了方法
 new Vue({
   el: '#app',
   router,

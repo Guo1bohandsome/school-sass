@@ -70,7 +70,9 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-
+            <ImageUpload ref="staffPhoto"></ImageUpload>
+            <!-- 我们可以通过ref来取得组件的实例，注意父组件可以通过ref获取子组件数据，
+            放在标签中是获取元素节点。放在组件中则可以获取组件对象 -->
           </el-form-item>
         </el-col>
       </el-row>
@@ -111,6 +113,7 @@
         <!-- 员工照片 -->
 
         <el-form-item label="员工照片">
+          <ImageUpload ref="myStaffPhoto"></ImageUpload>
           <!-- 放置上传图片 -->
         </el-form-item>
         <el-form-item label="国家/地区">
@@ -535,17 +538,40 @@ export default {
   methods: {
     async getUserDetailById() {
       this.userInfo = await getUserDetailById(this.userId)
+
+      if (this.userInfo.staffPhoto && this.userInfo.staffPhoto.trim()) {
+        //如果这里有值的话，就表示已经有了一个上传成功的照片，直接把staffPhoto赋值给fileList即可
+        // 这里我们赋值，同时需要给赋值的地址一个标记 upload: true
+        this.$refs.staffPhoto.fileList = [{ url: this.userInfo.staffPhoto, upload: true }]
+      }
     },
     async getPersonalDetail() {
       this.formData = await getPersonalDetail(this.userId)
+      if (this.formData.staffPhoto && this.formData.staffPhoto.trim()) {
+        //如果这里有值的话，就表示已经有了一个上传成功的照片，直接把staffPhoto赋值给fileList即可
+        // 这里我们赋值，同时需要给赋值的地址一个标记 upload: true
+        this.$refs.myStaffPhoto.fileList = [{ url: this.formData.staffPhoto, upload: true }]
+      }
     },
     async saveUser() {
-      await saveUserDetailById(this.userInfo)
-      this.$message.success('保存用户基本信息成功')
+      //先去获取头像中的地址
+      const fileList = this.$refs.staffPhoto.fileList //数组
+      if (fileList.some(item => !item.upload)) {
+        //先做一个判断 判断当前的图片有没有上传完成
+        this.$message.warning('此时还有图片没有上传完成')
+        return
+      }
+      //staffPhoto由于接口问题，必须给一个有空格的字符串才能存进去
+      await saveUserDetailById({ ...this.userInfo, staffPhoto: fileList.length ? fileList[0].url : ' ' }), this.$message.success('保存用户基本信息成功')
     },
     async savePersonal() {
-      await updatePersonal(this.formData)
-      this.$message.success('保存用户基础信息成功')
+      const fileList = this.$refs.myStaffPhoto.fileList //数组
+      if (fileList.some(item => !item.upload)) {
+        //先做一个判断 判断当前的图片有没有上传完成
+        this.$message.warning('此时还有图片没有上传完成')
+        return
+      }
+      await updatePersonal({ ...this.formData, staffPhoto: fileList.length ? fileList[0].url : ' ' }), this.$message.success('保存用户基础信息成功')
     }
   }
 }

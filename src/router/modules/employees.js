@@ -4,7 +4,7 @@ import Layout from '@/layout'
 // 每个子模块 其实 都是外层是layout  组件位于layout的二级路由里面
 export default {
   path: '/employees', // 路径
-  name: 'employee', // 给路由规则加一个name，此属性会在后面做权限时用到
+  name: 'employees', // 给路由规则加一个name，此属性会在后面做权限时用到
   component: Layout, // 组件
   // 配置二级路的路由表
   children: [{
@@ -31,6 +31,15 @@ export default {
       //为了显示，我们要把这个子节点隐藏
       meta: {
         tiltle: '员工详情'
+      }
+    },
+    {
+      path: 'print/:id',
+      component: () =>
+        import ('@/views/employees/print'),
+      hidden: true,
+      meta: {
+        title: '员工打印'
       }
     }
   ]
